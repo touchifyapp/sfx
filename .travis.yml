@@ -9,4 +9,4 @@ install:
 script:
     - golint base
     - golint bundler
-    - ./build.sh
+    - /bin/sh ./build.sh

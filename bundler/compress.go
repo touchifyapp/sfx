@@ -1,8 +1,8 @@
 package main
 
 import (
-	"archive/zip"
-	"compress/flate"
+	"archive/tar"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -12,25 +12,25 @@ import (
 	"time"
 )
 
-func appendZipFile(exefile *os.File) error {
-	tmpZipPath := filepath.Join(os.TempDir(), fmt.Sprintf("sfx-%d.zip", time.Now().Unix()))
-	tmpZipfile, err := os.Create(tmpZipPath)
+func appendTarFile(exefile *os.File) error {
+	tmpTarPath := filepath.Join(os.TempDir(), fmt.Sprintf("sfx-%d.tar.gz", time.Now().Unix()))
+	tmpTarfile, err := os.Create(tmpTarPath)
 	if err != nil {
 		return err
 	}
 
 	defer func() {
-		tmpZipfile.Close()
-		os.Remove(tmpZipPath)
+		tmpTarfile.Close()
+		os.Remove(tmpTarPath)
 	}()
 
-	zipWriter := zip.NewWriter(tmpZipfile)
-	if args.Compress > 0 {
-		verbosef("Compress package using level %d", args.Compress)
-		zipWriter.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
-			return flate.NewWriter(out, flate.BestCompression)
-		})
+	verbosef("Compress package using level %d", args.Compress)
+	gzipWriter, err := gzip.NewWriterLevel(tmpTarfile, args.Compress)
+	if err != nil {
+		return err
 	}
+
+	tarWriter := tar.NewWriter(gzipWriter)
 
 	dirAbs, err := filepath.Abs(args.Dir)
 	if err != nil {
@@ -46,23 +46,22 @@ func appendZipFile(exefile *os.File) error {
 			return nil
 		}
 
-		zipFileName := strings.TrimPrefix(path, dirAbs+string(filepath.Separator))
+		tarFileName := strings.TrimPrefix(path, dirAbs+string(filepath.Separator))
+
+		tarFileHeader, err := tar.FileInfoHeader(info, tarFileName)
+		if err != nil {
+			return err
+		}
+
+		// tarFileHeader.Name = tarFileName
+
+		err = tarWriter.WriteHeader(tarFileHeader)
+		if err != nil {
+			return err
+		}
 
 		if info.IsDir() {
-
 			return nil
-		}
-
-		zipFileHeader, err := zip.FileInfoHeader(info)
-		if err != nil {
-			return err
-		}
-
-		zipFileHeader.Name = zipFileName
-
-		zipFileWriter, err := zipWriter.CreateHeader(zipFileHeader)
-		if err != nil {
-			return err
 		}
 
 		srcFile, err := os.Open(path)
@@ -70,7 +69,7 @@ func appendZipFile(exefile *os.File) error {
 			return err
 		}
 
-		_, err = io.Copy(zipFileWriter, srcFile)
+		_, err = io.Copy(tarWriter, srcFile)
 		if err != nil {
 			return err
 		}
@@ -84,17 +83,22 @@ func appendZipFile(exefile *os.File) error {
 		return err
 	}
 
-	err = zipWriter.Close()
+	err = tarWriter.Close()
 	if err != nil {
 		return err
 	}
 
-	err = tmpZipfile.Sync()
+	err = gzipWriter.Close()
 	if err != nil {
 		return err
 	}
 
-	_, err = tmpZipfile.Seek(0, 0)
+	err = tmpTarfile.Sync()
+	if err != nil {
+		return err
+	}
+
+	_, err = tmpTarfile.Seek(0, 0)
 	if err != nil {
 		return err
 	}
@@ -104,7 +108,7 @@ func appendZipFile(exefile *os.File) error {
 		return err
 	}
 
-	_, err = io.Copy(exefile, tmpZipfile)
+	_, err = io.Copy(exefile, tmpTarfile)
 	if err != nil {
 		return err
 	}

@@ -1,48 +1,44 @@
 package main
 
 import (
-	"archive/zip"
+	"archive/tar"
 	"io"
 	"os"
 	"path/filepath"
 )
 
-func uncompress(reader *zip.Reader, config *peConfig) error {
-	for _, file := range reader.File {
-		dest := filepath.Join(config.Dest, file.Name)
-		err := copyFile(reader, file, dest)
+func uncompress(reader *tar.Reader, config *peConfig) error {
+	for {
+		header, err := reader.Next()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		dest := filepath.Join(config.Dest, header.Name)
+		info := header.FileInfo()
+
+		if info.IsDir() {
+			err = os.MkdirAll(dest, info.Mode())
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		destFile, err := os.OpenFile(dest, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		defer destFile.Close()
+
+		_, err = io.Copy(destFile, reader)
 		if err != nil {
 			return err
 		}
 	}
-
-	return nil
-}
-
-func copyFile(reader *zip.Reader, file *zip.File, dest string) error {
-	fileReader, err := file.Open()
-	if err != nil {
-		return err
-	}
-
-	defer fileReader.Close()
-
-	err = os.MkdirAll(filepath.Dir(dest), 0777)
-	if err != nil {
-		return err
-	}
-
-	destFile, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY, 0700)
-	if err != nil {
-		return err
-	}
-
-	defer destFile.Close()
-
-	_, err = io.Copy(destFile, fileReader)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

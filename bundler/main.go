@@ -28,7 +28,7 @@ func bundle() error {
 		return err
 	}
 
-	err = appendZipFile(exefile)
+	err = appendTarFile(exefile)
 	if err != nil {
 		return err
 	}

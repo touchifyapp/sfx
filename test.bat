@@ -1,16 +1,17 @@
 @echo off
 
-set VERSION=%1
-set CLEAN=%2
+set OPT=%1
+set VERSION=%2
+
+if ["%OPT%"]==["clean"] set CLEAN=1
+if ["%OPT%"]==["clean-src"] set CLEAN=1
+
+if ["%OPT%"]==["src"] set SRC=1
+if ["%OPT%"]==["clean-src"] set SRC=1
 
 if [%VERSION%]==[] set VERSION=1.0.0
 
-if ["%VERSION%"]==["clean"] (
-    set CLEAN=VERSION
-    set VERSION=1.0.0
-)
-
-if ["%CLEAN%"]==["clean"] (
+if defined CLEAN (
     echo #
     echo # Cleaning %TEMP%\co.touchify.testsfx
 
@@ -20,26 +21,37 @@ if ["%CLEAN%"]==["clean"] (
 echo #
 echo # Building SFX and bundler
 
-go build -o test/sfx.exe -tags verbose ^
-    base/log_verbose.go ^
-    base/config.go ^
-    base/mode.go ^
-    base/pecontent.go ^
-    base/uncompress.go ^
-    base/run.go ^
-    base/main.go
+if defined SRC (
+    bash ./build.sh
+) else (
+    go build -o test/sfx.exe -tags verbose ^
+        base/log_verbose.go ^
+        base/config.go ^
+        base/mode.go ^
+        base/pecontent.go ^
+        base/uncompress.go ^
+        base/run.go ^
+        base/main.go
 
-go build -o test/bundler.exe ^
-    bundler/util.go ^
-    bundler/args.go ^
-    bundler/config.go ^
-    bundler/compress.go ^
-    bundler/main.go
+    go build -o test/bundler.exe ^
+        bundler/util.go ^
+        bundler/args.go ^
+        bundler/config.go ^
+        bundler/compress.go ^
+        bundler/main.go
+)
 
 echo #
 echo # Bundling SFX...
 
-test\bundler.exe -v ^
+if defined SRC (
+    set BUNDLER=bin\x64\bundler.exe
+    copy bin\x64\sfxv.exe test\sfx.exe
+) else (
+    set BUNDLER=test\bundler.exe
+)
+
+%BUNDLER% -v ^
     -exe test/sfx.exe ^
     -dir project ^
     -compress 9 ^

@@ -1,5 +1,14 @@
 @echo off
 
+bash -version >nul 2>&1 && set USEBASH=1
+
+if [%USEBASH%]==[1] (
+    bash ./build.sh
+    exit /b 0
+) 
+
+echo #
+echo # Bash is not installed, buiding from Windows...
 echo #
 echo # Building SFX...
 

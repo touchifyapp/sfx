@@ -56,6 +56,7 @@ func main() {
 		}
 	}
 
+	verbosef("Running %s...", config.Run)
 	err = run(config)
 	if err != nil {
 		verboseFatal(err)

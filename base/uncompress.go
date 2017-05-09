@@ -8,6 +8,11 @@ import (
 )
 
 func uncompress(reader *tar.Reader, config *peConfig, force bool) error {
+	err := os.MkdirAll(config.Dest, 0777)
+	if err != nil {
+		return err
+	}
+
 	for {
 		header, err := reader.Next()
 		if err == io.EOF {
@@ -17,7 +22,7 @@ func uncompress(reader *tar.Reader, config *peConfig, force bool) error {
 			return err
 		}
 
-		dest := filepath.Join(config.Dest, header.Name)
+		dest := filepath.Join(config.Dest, header.Linkname)
 		info := header.FileInfo()
 
 		if info.IsDir() {

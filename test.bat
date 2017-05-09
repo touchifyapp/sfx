@@ -1,5 +1,22 @@
 @echo off
 
+set VERSION=%1
+set CLEAN=%2
+
+if [%VERSION%]==[] set VERSION=1.0.0
+
+if ["%VERSION%"]==["clean"] (
+    set CLEAN=VERSION
+    set VERSION=1.0.0
+)
+
+if ["%CLEAN%"]==["clean"] (
+    echo #
+    echo # Cleaning %TEMP%\co.touchify.testsfx
+
+    rmdir /S /Q "%TEMP%\co.touchify.testsfx"
+)
+
 echo #
 echo # Building SFX and bundler
 
@@ -27,7 +44,7 @@ test\bundler.exe -v ^
     -dir project ^
     -compress 9 ^
     -id co.touchify.testsfx ^
-    -version 1.0.0 ^
+    -version %VERSION% ^
     -args "--sfx"
 
 echo #

@@ -48,12 +48,12 @@ func appendTarFile(exefile *os.File) error {
 
 		tarFileName := strings.TrimPrefix(path, dirAbs+string(filepath.Separator))
 
-		tarFileHeader, err := tar.FileInfoHeader(info, tarFileName)
+		tarFileHeader, err := tar.FileInfoHeader(info, info.Name())
 		if err != nil {
 			return err
 		}
 
-		// tarFileHeader.Name = tarFileName
+		tarFileHeader.Linkname = tarFileName
 
 		err = tarWriter.WriteHeader(tarFileHeader)
 		if err != nil {

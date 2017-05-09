@@ -25,6 +25,49 @@ func isConfigPartEnd(part string) bool {
 	return strings.HasPrefix(part, "[/sfxconfig]")
 }
 
+func readDestConfig(config *peConfig) (*peConfig, error) {
+	path := filepath.Join(config.Dest, "SFXCONFIG")
+	file, err := os.OpenFile(path, os.O_RDONLY, 0400)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	_, destConfig, err := readConfig(file)
+	if err != nil {
+		return nil, err
+	}
+
+	err = file.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return destConfig, nil
+}
+
+func writeDestConfig(config *peConfig) error {
+	conf := serializeConfig(config)
+
+	path := filepath.Join(config.Dest, "SFXCONFIG")
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+
+	file.WriteString(conf)
+
+	err = file.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func readConfig(reader io.ReadSeeker) (int, *peConfig, error) {
 	len, config, err := parseConfig(reader)
 	if err != nil {
@@ -81,6 +124,25 @@ func parseConfig(reader io.ReadSeeker) (int, *peConfig, error) {
 
 	verbosef("Config found: %+v (%d)", config, size)
 	return size, config, nil
+}
+
+func serializeConfig(config *peConfig) string {
+	conf := "[sfxconfig]\n" +
+		"ID=" + config.ID + "\n" +
+		"Run=" + config.Run + "\n" +
+		"Version=" + config.Version + "\n"
+
+	if config.Dest != "" {
+		conf = conf + "Dest=" + config.Dest + "\n"
+	}
+
+	if config.Args != "" {
+		conf = conf + "Args=" + config.Args + "\n"
+	}
+
+	conf = conf + "[/sfxconfig]"
+
+	return conf
 }
 
 func setValue(config *peConfig, name string, value string) {

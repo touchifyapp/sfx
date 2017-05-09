@@ -7,6 +7,7 @@ go build -o bin/sfx.exe ^
     -ldflags "-H windowsgui" ^
     base/log_silent.go ^
     base/config.go ^
+    base/mode.go ^
     base/pecontent.go ^
     base/uncompress.go ^
     base/run.go ^
@@ -18,6 +19,7 @@ echo # Building SFX (verbose)...
 go build -o bin/sfxv.exe ^
     -tags verbose ^
     base/log_verbose.go ^
+    base/mode.go ^
     base/config.go ^
     base/pecontent.go ^
     base/uncompress.go ^

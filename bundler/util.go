@@ -8,23 +8,18 @@ import (
 	"strings"
 )
 
-func openExe(exe string) (*os.File, os.FileInfo, error) {
+func openExe(exe string) (*os.File, error) {
 	exeAbs, err := filepath.Abs(exe)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	exefile, err := os.OpenFile(exeAbs, os.O_WRONLY, os.ModeAppend)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	exefileInfo, err := exefile.Stat()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return exefile, exefileInfo, nil
+	return exefile, nil
 }
 
 func findExeInDir(dir string) (string, error) {

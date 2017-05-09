@@ -12,13 +12,14 @@ go build -o test/bundler.exe ^
     bundler/util.go ^
     bundler/args.go ^
     bundler/config.go ^
-    bundler/zip.go ^
+    bundler/compress.go ^
     bundler/main.go
 
 echo Bundling SFX...
 test\bundler.exe -v ^
     -exe test/sfx.exe ^
     -dir project ^
+    -compress 9 ^
     -id co.touchify.testsfx ^
     -version 2.0.0 ^
     -args "--sfx"

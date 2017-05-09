@@ -17,18 +17,18 @@ func main() {
 }
 
 func bundle() error {
-	exefile, exeinfo, err := openExe(args.Exe)
+	exefile, err := openExe(args.Exe)
 	if err != nil {
 		return err
 	}
 	defer exefile.Close()
 
-	size, err := appendConfigFile(exefile)
+	err = appendConfigFile(exefile)
 	if err != nil {
 		return err
 	}
 
-	err = appendZipFile(exefile, exeinfo.Size()+size)
+	err = appendZipFile(exefile)
 	if err != nil {
 		return err
 	}

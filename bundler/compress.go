@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"compress/flate"
 	"errors"
 	"fmt"
 	"io"
@@ -11,7 +12,7 @@ import (
 	"time"
 )
 
-func appendZipFile(exefile *os.File, offset int64) error {
+func appendZipFile(exefile *os.File) error {
 	tmpZipPath := filepath.Join(os.TempDir(), fmt.Sprintf("sfx-%d.zip", time.Now().Unix()))
 	tmpZipfile, err := os.Create(tmpZipPath)
 	if err != nil {
@@ -24,7 +25,12 @@ func appendZipFile(exefile *os.File, offset int64) error {
 	}()
 
 	zipWriter := zip.NewWriter(tmpZipfile)
-	// zipWriter.SetOffset(offset)
+	if args.Compress > 0 {
+		verbosef("Compress package using level %d", args.Compress)
+		zipWriter.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
+			return flate.NewWriter(out, flate.BestCompression)
+		})
+	}
 
 	dirAbs, err := filepath.Abs(args.Dir)
 	if err != nil {

@@ -5,11 +5,12 @@ import (
 )
 
 var args struct {
-	ID      string
-	Run     string
-	Dest    string
-	Args    string
-	Version string
+	ID       string
+	Run      string
+	Dest     string
+	Args     string
+	Version  string
+	Compress int
 
 	Dir     string
 	Exe     string
@@ -21,7 +22,8 @@ func parseArguments() error {
 	run := flag.String("run", "", "The program to run in the project directory (default: auto-detect).")
 	dest := flag.String("dest", "", "The absolute destination path to extract project in (default: temp).")
 	cargs := flag.String("args", "", "arguments to pass to executable")
-	version := flag.String("version", "1.0.0", "The program to run in the project directory.")
+	version := flag.String("version", "1.0.0", "The program version to check for updates.")
+	compress := flag.Int("compress", 0, "The program to run in the project directory.")
 
 	dir := flag.String("dir", "project", "The directory to bundle into sfx.")
 	exe := flag.String("exe", "sfx.exe", "The program to bundle the project in.")
@@ -34,6 +36,7 @@ func parseArguments() error {
 	args.Dest = *dest
 	args.Args = *cargs
 	args.Version = *version
+	args.Compress = *compress
 
 	args.Dir = *dir
 	args.Exe = *exe

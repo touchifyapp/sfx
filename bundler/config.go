@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func appendConfigFile(exefile *os.File) (int64, error) {
+func appendConfigFile(exefile *os.File) error {
 	config := "[sfxconfig]\n" +
 		"ID=" + args.ID + "\n" +
 		"Run=" + args.Run + "\n" +
@@ -27,13 +27,13 @@ func appendConfigFile(exefile *os.File) (int64, error) {
 
 	_, err := exefile.Seek(0, 2)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	_, err = io.Copy(exefile, reader)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return int64(buf.Len()), nil
+	return nil
 }

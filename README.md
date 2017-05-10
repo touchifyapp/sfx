@@ -36,3 +36,10 @@ Run `bundler -h` to print usage help :
 ## License
 
 [MIT](https://github.com/touchifyapp/sfx/blob/master/LICENSE)
+
+## Changelog
+
+ * `1.0.0`: Initial release
+ * `1.0.1`:
+     * Append _Microsoft Windows File Properties/Version Info_ to `sfx.exe` and `sfxv.exe` using [goversioninfo](https://github.com/josephspurrier/goversioninfo).
+     * This allows _File Properties/Version Info_ modification via tools like [rcedit](https://github.com/electron/rcedit).

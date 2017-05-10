@@ -2,3 +2,6 @@
 bin/
 test/
 project/
+
+# Generated Resources
+*.syso

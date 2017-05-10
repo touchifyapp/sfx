@@ -24,21 +24,12 @@ echo # Building SFX and bundler
 if defined SRC (
     bash ./build.sh
 ) else (
-    go build -o test/sfx.exe -tags verbose ^
-        base/log_verbose.go ^
-        base/config.go ^
-        base/mode.go ^
-        base/pecontent.go ^
-        base/uncompress.go ^
-        base/run.go ^
-        base/main.go
+    go build -o test/sfx.exe ^
+        -tags verbose ^
+        ./base
 
     go build -o test/bundler.exe ^
-        bundler/util.go ^
-        bundler/args.go ^
-        bundler/config.go ^
-        bundler/compress.go ^
-        bundler/main.go
+        ./bundler
 )
 
 echo #

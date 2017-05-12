@@ -14,7 +14,7 @@ echo # Building SFX...
 
 go generate ./base
 go build -o bin/sfx.exe ^
-    -ldflags "-H windowsgui" ^
+    -ldflags "-s -w -H windowsgui" ^
     ./base
 
 echo #
@@ -22,6 +22,7 @@ echo # Building SFX (verbose)...
 
 go generate ./base
 go build -o bin/sfxv.exe ^
+    -ldflags "-s -w" ^
     -tags verbose ^
     ./base
 

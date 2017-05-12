@@ -41,7 +41,7 @@ echo "# Building SFX (windows x64)..."
 GOOS=windows GOARCH=amd64 go generate ./base
 GOOS=windows GOARCH=amd64 go build \
     -o bin/x64/sfx.exe \
-    -ldflags "-H windowsgui" \
+    -ldflags "-s -w -H windowsgui" \
     ./base
 
 echo "#"
@@ -50,7 +50,7 @@ echo "# Building SFX (windows i386)..."
 GOOS=windows GOARCH=386 go generate ./base
 GOOS=windows GOARCH=386 go build \
     -o bin/i386/sfx.exe \
-    -ldflags "-H windowsgui" \
+    -ldflags "-s -w -H windowsgui" \
     ./base
 
 echo "#"
@@ -59,6 +59,7 @@ echo "# Building SFX verbose (windows x64)..."
 GOOS=windows GOARCH=amd64 go generate ./base
 GOOS=windows GOARCH=amd64 go build \
     -o bin/x64/sfxv.exe \
+    -ldflags "-s -w" \
     -tags verbose \
     ./base
     
@@ -68,5 +69,6 @@ echo "# Building SFX verbose (windows i386)..."
 GOOS=windows GOARCH=386 go generate ./base
 GOOS=windows GOARCH=386 go build \
     -o bin/i386/sfxv.exe \
+    -ldflags "-s -w" \
     -tags verbose \
     ./base

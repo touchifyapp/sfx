@@ -5,13 +5,16 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 )
 
-func uncompress(reader *tar.Reader, config *peConfig, force bool) error {
+func uncompress(reader *tar.Reader, config *peConfig, newModTime time.Time) error {
 	err := os.MkdirAll(config.Dest, 0777)
 	if err != nil {
 		return err
 	}
+
+	checkDates := newModTime.After(time.Unix(0, 0))
 
 	for {
 		header, err := reader.Next()
@@ -34,13 +37,13 @@ func uncompress(reader *tar.Reader, config *peConfig, force bool) error {
 			continue
 		}
 
-		if !force {
+		if checkDates {
 			destInfo, err := os.Stat(dest)
 			if err != nil && !os.IsNotExist(err) {
 				return err
 			}
 
-			if destInfo.ModTime().After(info.ModTime()) {
+			if destInfo.ModTime().After(newModTime) {
 				return nil
 			}
 		}

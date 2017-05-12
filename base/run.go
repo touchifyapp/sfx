@@ -28,6 +28,13 @@ func run(config *peConfig) error {
 		args = append(args, iargs...)
 	}
 
+	procArgsLen := len(os.Args)
+	if procArgsLen > 1 {
+		for i := 1; i < procArgsLen; i++ {
+			args = append(args, os.Args[i])
+		}
+	}
+
 	process, err := os.StartProcess(exe, args, &attr)
 	if err != nil {
 		return err

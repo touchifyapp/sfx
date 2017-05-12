@@ -9,6 +9,8 @@ if ["%OPT%"]==["clean-src"] set CLEAN=1
 if ["%OPT%"]==["src"] set SRC=1
 if ["%OPT%"]==["clean-src"] set SRC=1
 
+if ["%OPT%"]==["quick"] set QUICK=1
+
 if [%VERSION%]==[] set VERSION=1.0.0
 
 if defined CLEAN (
@@ -18,18 +20,20 @@ if defined CLEAN (
     rmdir /S /Q "%TEMP%\co.touchify.testsfx"
 )
 
-echo #
-echo # Building SFX and bundler
+if not defined QUICK (
+    echo #
+    echo # Building SFX and bundler
 
-if defined SRC (
-    bash ./build.sh
-) else (
-    go build -o test/sfx.exe ^
-        -tags verbose ^
-        ./base
+    if defined SRC (
+        bash ./build.sh
+    ) else (
+        go build -o test/sfx.exe ^
+            -tags verbose ^
+            ./base
 
-    go build -o test/bundler.exe ^
-        ./bundler
+        go build -o test/bundler.exe ^
+            ./bundler
+    )
 )
 
 echo #
@@ -53,5 +57,5 @@ if defined SRC (
 echo #
 echo # Running SFX...
 
-test\sfx.exe
+test\sfx.exe --test
 

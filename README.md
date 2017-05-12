@@ -43,3 +43,7 @@ Run `bundler -h` to print usage help :
  * `1.0.1`:
      * Append _Microsoft Windows File Properties/Version Info_ to `sfx.exe` and `sfxv.exe` using [goversioninfo](https://github.com/josephspurrier/goversioninfo).
      * This allows _File Properties/Version Info_ modification via tools like [rcedit](https://github.com/electron/rcedit).
+ * `1.0.2`:
+     * Append arguments passed to `sfx.exe` to bundled executable.
+     * Use `sfx.exe` modification time instead of archive ones.
+     * Use ldflags to reduce `sfx.exe` size.

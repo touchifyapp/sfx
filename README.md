@@ -47,3 +47,6 @@ Run `bundler -h` to print usage help :
      * Append arguments passed to `sfx.exe` to bundled executable.
      * Use `sfx.exe` modification time instead of archive ones.
      * Use ldflags to reduce `sfx.exe` size.
+ * `1.0.3`:
+     * Add Mac OS X Bundler target.
+     * Improve publish configuration.

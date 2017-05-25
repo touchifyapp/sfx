@@ -4,13 +4,13 @@
 		"FileVersion": {
 			"Major": 1,
 			"Minor": 0,
-			"Patch": 0,
+			"Patch": 3,
 			"Build": 0
 		},
 		"ProductVersion": {
 			"Major": 1,
 			"Minor": 0,
-			"Patch": 0,
+			"Patch": 3,
 			"Build": 0
 		},
 		"FileFlagsMask": "3f",
@@ -24,14 +24,14 @@
 		"Comments": "SFX bootstrapper",
 		"CompanyName": "Touchify",
 		"FileDescription": "SFX Bootstrapper",
-		"FileVersion": "1.0.0",
+		"FileVersion": "1.0.3",
 		"InternalName": "sfx.exe",
 		"LegalCopyright": "",
 		"LegalTrademarks": "",
 		"OriginalFilename": "",
 		"PrivateBuild": "",
 		"ProductName": "SFX Bootstrapper",
-		"ProductVersion": "v1.0.0.0",
+		"ProductVersion": "v1.0.3.0",
 		"SpecialBuild": ""
 	},
 	"VarFileInfo":

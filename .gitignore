@@ -2,6 +2,10 @@
 bin/
 test/
 project/
+publish/
 
 # Generated Resources
 *.syso
+
+# Common Detritus
+.DS_Store

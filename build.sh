@@ -36,6 +36,13 @@ GOOS=windows GOARCH=386 go build \
     ./bundler
 
 echo "#"
+echo "# Building Bundler (MAC OS X x64)..."
+
+GOOS=darwin GOARCH=amd64 go build \
+    -o bin/x64/bundlerosx \
+    ./bundler
+
+echo "#"
 echo "# Building SFX (windows x64)..."
 
 GOOS=windows GOARCH=amd64 go generate ./base
